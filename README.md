@@ -71,7 +71,7 @@ All of these services are started but stops once the machine is cut off and need
 # LLMNR/NBT-NS Poisining Project
 - Start off on Windows Server 2022 to File and Storage Services, then click shares
 
-<img width="761" height="524" alt="image" src="https://github.com/user-attachments/assets/77e3ed0d-7a98-470f-ae46-ee3d8833287a" />
+<img width="965" height="373" alt="image" src="https://github.com/user-attachments/assets/459270bd-7af2-473e-b5a7-0400333a4329" />
 
 - Open your files and go to the local C: drive on your computer and create a folder called hackme
 
@@ -120,7 +120,7 @@ All of these services are started but stops once the machine is cut off and need
     
 - Enter a drive and enter the name of the server and the folder for the share and click finish
 
-![images/image 1.png](image%201.png)
+![image.png](images/image%201.png)
 
 - Now we have access to the JAWUNSERVER hackme share
 
