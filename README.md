@@ -1,15 +1,73 @@
-# Building AD Lab, LLMNR Poisioning, and NTLMv2 Cracking w / Hashcat
+# Building AD Lab, LLMNR/NBT-NS Poisioning, and NTLMv2 Cracking w / Hashcat + JohnTheRipper
+I am performing LLMNR/NBT-NS Poisioning on a Vulnerable Active Directory server on VMWare. In this project I set up and configured the Kali Linux, Windows 11 iso, and Windows 2022 Server iso. First I will briefly go over the steps I used to set up the AD DS. Once I recieved the NTLMv2 hash I was unable to crack it due to a slew of possibilites, but the main goal for this project was achieved because I successfully captured the hash for the User I created while setting in the AD DS.
 
-# Building AD Lab
+# Prerequisites + Tools Used
+- VMware(Virtualization Software)
+- Kali Linux
+- Windows 11 iso
+- 2022 Windows Server iso
+- Install Updated version of Impacket
 
-To set up an AD(Active Directory) Lab you will need will need:
+# Objectives
+- Set up and Configure VMWare, Kali Linux, Windows 11 iso, Windows 2022 Server iso
+- Set up and configure Windows Active Directory and Domain Controller
+- Create a share on the Windows 2022 Server and access the share using a created user for the Windows 11 Virtual Machine
+- Use Responder to recieve the hash from 2022 Windows Server that includes user's Username, Domain Name, and the users password encrypted with NTLMv2 hashes
+# Responder.py(Upadted Impacket)
+1. We need to install a new version of impacket for kali
+    - get rid of all impacket associated files
+    - apt purge **impacket**
+    - go to: https://github.com/fortra/impacket
+    - move to opt folder
+        - cd /opt/
+2. git clone https://github.com/fortra/impacket
+        - clones file from github
+3. Run service apache2 start to start apache server. Apache Default page shows up. Then run:
+    - service ssh start
+    - service postgresql start(for metasploit)
+    - service apache2 stop - Stops the apach server
+   
+All of these services are started but stops once the machine is cut off and needs to be restarted again, this is where systemctl comes in
+- use systemctl to enable these services upon start up
+- systemctl enable ssh(done)
+- systemctl enable postgresql(done)
 
-- Virtualization software: VM Workstation Player or Oracle Virtual Box
-- Microsoft Windows Server 2022
-- Microsoft Windows 11
+# Dry Tutorial on Building AD Lab
+- Download Windows 11 iso and Windows 2022 Server iso files and upload them to VMWare as a new Virtual Machine
+- Rename the Server(May require restart)
+  
+### Setting up Domain
+-  In the Server Manager go to Add Roles and Features, make sure Role/Feature based installation is selected. Then press next and select the Server that you named
+- Check the Active Directory and Domain Services box and click add features. The click next until you get the button to install and click install
+- Promote your serer to Domain Controller by clicking the caution sign by the flag which pops up after the role was created
+- Select add a new forest and give it a name. I used jawun.local. Then press next. Set up a password for the Domain Controller, then press next until it generates your NetBIOS name. Mine was JAWUN
+- After the name is created, press next. Leave the paths as they are and press next until you get to the prerequisite check. After the check validates, click install and the computer wil restart
+### Adding a User
+- Go to the tools tab and click on Active Directory Users and Computers. Click on the newly created forest. Go to the Users folder, right click, hover over New and click User
+- Add User info click next then and password and check password never expires(for testing purposes ofcourse) and click next then finish
+  
+### Joining the Server with Windows 11
+- Change Computer name(May require restart)
+- Get IP Address from Server 2022
+- Go to Network and internet settings and click Ethernet0
+- Change adapter options
+- Go to properties and click internet version 4 (TCP/IPv4)
+- Add the Server's IP address in the Perferred DNS Server placeholder and 8.8.8.8 for Alternate DNS Server
+- Go to Access work or school in the search bar and click it. Click Join this device to a local Active Directory Domain
+- Enter the domain name and click next
+- Enter the new user's username and password and click ok. The choose standard user for Account Type and click next, then your system will restart
 
 # LLMNR Poisioning
+> What is LLMNR Poisining? Link-Local Multicast Name Resolution(LLMNR) is a Microsoft Protocol that allows computers on the same local network to resolve hostnames. Also when standard DNS fails due to circumstances such as a typo LLMNR uses muticast queries over UDP port 5355. NetBIOS Name Service(NBT-NS) is an older protocol that serves the same fallback purpose(UDP port 137). These protocols lack authentication, for example, queries are broadcast to the local network and the first response is often trusted.
 
+# How the Attack works
+- The user attempts to access a resource with an unresolved hostname(e.g., mistyped server name or non existent host
+- DNS Fails > the system relies on LLMNR/NBT-NS and broadcasts a query asking "Who is this hostname?"
+- The attacker(using tools like Responder) listens for these queries and claims them with their own IP Address (poisioning the resolution)
+- The victim connects to the attacker's machine instead of the intended one
+- If the resource requires Authentication(common for file shares via SMB) The victim automatically sends NTLM creds(username + hashed password, often NTLMv2)
+
+# LLMNR/NBT-NS Poisining Project
 - Start off on Windows Server 2022 to File and Storage Services, then click shares
 
 ![Screenshot 2025-12-16 102059.png](Screenshot_2025-12-16_102059.png)
@@ -55,7 +113,7 @@ To set up an AD(Active Directory) Lab you will need will need:
 ![Screenshot 2025-12-16 104640.png](Screenshot_2025-12-16_104640.png)
 
 - Now we head back to Windows 11 VM to add that share we just created. Log in as created user
-- Head to this PC in the file explorer and select to map a network drive
+- Head to this PC in the file explorer and select to map a network drive (The drive was already mapped from the previous time I ran the project)
     
     ![image.png](image.png)
     
@@ -67,16 +125,6 @@ To set up an AD(Active Directory) Lab you will need will need:
 
 ![image.png](image%202.png)
 
-# LLMNR(Link Local Multicast Name Resolution)/NBT-NS Poisioning
-
-- ( Write and tell about LLMNR Poininonsg). NBTNS - NetBIOS name service
-- They are used to identify hosts when the DNS fails
-- Flaw - Both the services use the Users’ Username and their hash(NTLMv2 sometimes NTLMv1)
-- Using this name resolution to access a share
-
-### Man-In-The-Middle Attack
-
-- While User hashes are being used over and over, typically the hashes are going out to a known share or a know device. Sometimes there is a mistake with where the hashes need to be sent and a man in the middle could accept that hash
 - Go to Kali and open the root terminal to locate [Responder.py](http://Responder.py) then cd into it. The responder picks up network traffic
 
 ![image.png](image%203.png)
@@ -197,3 +245,15 @@ To set up an AD(Active Directory) Lab you will need will need:
 ![image.png](image%2030.png)
 
 - Now with the command prompt running as Administrator run hashcat.exe
+
+# Results
+It turns out that I was not able to crack the hash using rockyou.txt or milw0rm-dictionary.txt wordlists. I also used both JohnTheRipper and Hashcat on the Windows 11 VM and on my personal Windows 11 system and still could not crack the NTLMv2 hash. Maybe I could crack it with a bigger or more robust wordlist? The password I set for that user also was 14 characters long so maybe that had something to do with it?
+
+# Mitigation
+- Disable LLMNR, select "TURN OFF MULTICAST NAME RESOLUTION" under Local Computer Policy > Computer Configuration >Administrative Templates > Network > DNS Client in the Group Policy Editor
+- Diable NBT-NS, navigate to Network Connections > Network > Network Adapter Properties > TCP/IPv4 Properties > Advanced Tab > Wins tab and select "Disable NetBIOS over TCP/IPv4"
+
+If a company must use or connot disable LLMNR/NBT-NS the best thing to do is:
+- Require network access control
+- Require stong passwords. The more complex the password the harder it is for the attacker to crack the hash. I think what the situation was here because I think I set a pretty robust password for my created windows user :)
+  
