@@ -43,6 +43,7 @@ All of these services are started but stops once the machine is cut off and need
 - Promote your serer to Domain Controller by clicking the caution sign by the flag which pops up after the role was created
 - Select add a new forest and give it a name. I used jawun.local. Then press next. Set up a password for the Domain Controller, then press next until it generates your NetBIOS name. Mine was JAWUN
 - After the name is created, press next. Leave the paths as they are and press next until you get to the prerequisite check. After the check validates, click install and the computer wil restart
+
 ### Adding a User
 - Go to the tools tab and click on Active Directory Users and Computers. Click on the newly created forest. Go to the Users folder, right click, hover over New and click User
 - Add User info click next then and password and check password never expires(for testing purposes ofcourse) and click next then finish
@@ -69,7 +70,7 @@ All of these services are started but stops once the machine is cut off and need
 - If the resource requires Authentication(common for file shares via SMB) The victim automatically sends NTLM creds(username + hashed password, often NTLMv2)
 
 # LLMNR/NBT-NS Poisining Project
-- Start off on Windows Server 2022 to File and Storage Services, then click shares
+- Start off on Windows Server 2022 to File and Storage Services, then click shares (the picture below shows a share I've already created
 
 <img width="965" height="373" alt="image" src="https://github.com/user-attachments/assets/459270bd-7af2-473e-b5a7-0400333a4329" />
 
