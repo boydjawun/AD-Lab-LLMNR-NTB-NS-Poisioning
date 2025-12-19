@@ -13,8 +13,9 @@ I am performing LLMNR/NBT-NS Poisioning on a Vulnerable Active Directory server 
 - Set up and configure Windows Active Directory and Domain Controller
 - Create a share on the Windows 2022 Server and access the share using a created user for the Windows 11 Virtual Machine
 - Use Responder to recieve the hash from 2022 Windows Server that includes user's Username, Domain Name, and the users password encrypted with NTLMv2 hashes
+  
 # Responder.py(Upadted Impacket)
-1. We need to install a new version of impacket for kali
+1. Although Kali Linux already comes with impacket we install a new version of impacket for kali
     - get rid of all impacket associated files
     - apt purge **impacket**
     - go to: https://github.com/fortra/impacket
