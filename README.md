@@ -33,7 +33,7 @@ All of these services are started but stops once the machine is cut off and need
 - systemctl enable ssh(done)
 - systemctl enable postgresql(done)
 
-# Dry Tutorial on Building AD Lab
+# Brief Tutorial on Building AD Lab
 - Download Windows 11 iso and Windows 2022 Server iso files and upload them to VMWare as a new Virtual Machine
 - Rename the Server(May require restart)
   
@@ -43,10 +43,13 @@ All of these services are started but stops once the machine is cut off and need
 - Promote your serer to Domain Controller by clicking the caution sign by the flag which pops up after the role was created
 - Select add a new forest and give it a name. I used jawun.local. Then press next. Set up a password for the Domain Controller, then press next until it generates your NetBIOS name. Mine was JAWUN
 - After the name is created, press next. Leave the paths as they are and press next until you get to the prerequisite check. After the check validates, click install and the computer wil restart
+<img width="1280" height="686" alt="image" src="https://github.com/user-attachments/assets/0fd58b17-c68e-4aec-b86e-a8f816a50b0c" />
 
 ### Adding a User
 - Go to the tools tab and click on Active Directory Users and Computers. Click on the newly created forest. Go to the Users folder, right click, hover over New and click User
 - Add User info click next then and password and check password never expires(for testing purposes ofcourse) and click next then finish
+<img width="941" height="663" alt="image" src="https://github.com/user-attachments/assets/3f094019-01fe-4e51-9800-06866900eecc" />
+
   
 ### Joining the Server with Windows 11
 - Change Computer name(May require restart)
@@ -55,6 +58,8 @@ All of these services are started but stops once the machine is cut off and need
 - Change adapter options
 - Go to properties and click internet version 4 (TCP/IPv4)
 - Add the Server's IP address in the Perferred DNS Server placeholder and 8.8.8.8 for Alternate DNS Server
+<img width="686" height="738" alt="image" src="https://github.com/user-attachments/assets/25f2a666-c60c-4c93-851e-41eff4a18bd3" />
+
 - Go to Access work or school in the search bar and click it. Click Join this device to a local Active Directory Domain
 - Enter the domain name and click next
 - Enter the new user's username and password and click ok. The choose standard user for Account Type and click next, then your system will restart
